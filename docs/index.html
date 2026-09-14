@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AstraClient is a focused Minecraft Java launcher for managing instances, loaders and profiles.">
+  <title>AstraClient | A quieter way to play</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="shell nav">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/astra_logo.png" alt="AstraClient logo"><span>AstraClient</span></a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="index.html" aria-current="page">Overview</a>
+      <a href="#features">Features</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div class="eyebrow">Minecraft Java launcher</div>
+      <h1>Play your way.<br><span style="color: var(--accent-light)">Keep it clear.</span></h1>
+      <p class="lead">AstraClient brings instances, loaders, servers and accounts into one composed desktop experience. Less friction between you and the worlds you actually want to play.</p>
+      <div class="actions">
+        <a class="button primary" href="https://github.com/" rel="noreferrer">View the repository <span aria-hidden="true">↗</span></a>
+        <a class="button" href="#features">Explore AstraClient <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="status">Built for Minecraft Java Edition</div>
+    </section>
+
+    <section class="shell section" aria-labelledby="preview-title">
+      <div class="section-intro">
+        <div><div class="eyebrow">A first look</div><h2 id="preview-title">A calm cockpit for your worlds.</h2></div>
+        <p>The same dark glass language from the desktop client, translated into a quick visual preview.</p>
+      </div>
+      <div class="preview-wrap">
+        <div class="screenshot-stage" aria-label="AstraClient application screenshots">
+          <img class="screenshot" id="app-screenshot" src="previews/Capture%20d%E2%80%99%C3%A9cran%202026-09-14%20010952.png" alt="AstraClient Home view screenshot">
+        </div>
+        <div class="screenshot-meta"><strong id="screenshot-title">Home</strong><span class="screenshot-count" id="screenshot-count">01 / 08</span></div>
+        <div class="screenshot-dots" id="screenshot-dots" aria-label="Choose an application screenshot"></div>
+      </div>
+    </section>
+
+    <section class="shell section" id="features">
+      <div class="section-intro">
+        <div><div class="eyebrow">The client</div><h2>Everything in its place.</h2></div>
+        <p>AstraClient keeps the technical work close at hand while leaving the interface calm, fast and easy to scan.</p>
+      </div>
+      <div class="grid">
+        <article class="card"><div class="icon">✦</div><h3>Instance control</h3><p>Organize versions, loaders, memory settings and game directories without hunting through folders.</p></article>
+        <article class="card"><div class="icon">◈</div><h3>Modded, without the mess</h3><p>Browse Modrinth content and prepare Fabric, Quilt, Forge or NeoForge instances from one place.</p></article>
+        <article class="card"><div class="icon">⌁</div><h3>Accounts that stay yours</h3><p>Use Microsoft authentication or a local offline profile with clear account state and predictable launch behavior.</p></article>
+      </div>
+    </section>
+
+    <section class="shell section">
+      <div class="card">
+        <div class="eyebrow">Open development</div>
+        <h2>Made for players who care about the details.</h2>
+        <p class="lead">AstraClient is an independent project. It is not affiliated with Mojang Studios or Microsoft.</p>
+        <div class="actions"><a class="button primary" href="mailto:zxer_officiel@outlook.fr">Contact the team</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="shell footer-row"><span>© 2026 AstraClient</span><span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span></div></footer>
+  <script>
+    const screenshots = [
+      ["Capture d’écran 2026-09-14 010952.png", "Home"],
+      ["Capture d’écran 2026-09-14 011045.png", "Browse"],
+      ["Capture d’écran 2026-09-14 011119.png", "Manage"],
+      ["Capture d’écran 2026-09-14 011145.png", "Aternos"],
+      ["Capture d’écran 2026-09-14 011233.png", "Settings"],
+      ["Capture d’écran 2026-09-14 011301.png", "Output Console"],
+      ["Capture d’écran 2026-09-14 011417.png", "About AstraClient"],
+      ["Capture d’écran 2026-09-14 011502.png", "Release History"]
+    ];
+    const image = document.getElementById("app-screenshot");
+    const title = document.getElementById("screenshot-title");
+    const count = document.getElementById("screenshot-count");
+    const dots = document.getElementById("screenshot-dots");
+    let current = 0;
+
+    function screenshotUrl(file) {
+      return "previews/" + encodeURIComponent(file).replace(/%20/g, "%20");
+    }
+
+    function showScreenshot(index) {
+      current = (index + screenshots.length) % screenshots.length;
+      const [file, label] = screenshots[current];
+      image.classList.add("is-changing");
+      window.setTimeout(() => {
+        image.src = screenshotUrl(file);
+        image.alt = "AstraClient " + label + " view screenshot";
+        title.textContent = label;
+        count.textContent = String(current + 1).padStart(2, "0") + " / " + String(screenshots.length).padStart(2, "0");
+        document.querySelectorAll(".screenshot-dot").forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === current));
+        image.classList.remove("is-changing");
+      }, 120);
+    }
+
+    screenshots.forEach(([, label], index) => {
+      const dot = document.createElement("button");
+      dot.className = "screenshot-dot";
+      dot.type = "button";
+      dot.ariaLabel = "Show " + label + " screenshot";
+      dot.title = label;
+      dot.addEventListener("click", () => showScreenshot(index));
+      dots.appendChild(dot);
+    });
+    showScreenshot(0);
+  </script>
+</body>
+</html>

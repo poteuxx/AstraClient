@@ -1,0 +1,365 @@
+<UserControl x:Class="AstraClient.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="28,20" MaxWidth="760">
+
+            <!-- Page title -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                <Path Data="{StaticResource Icon.Settings}"
+                      Width="24" Height="24" Stretch="Uniform"
+                      Fill="{DynamicResource Brush.Accent}" Margin="0,0,12,0"
+                      VerticalAlignment="Center"/>
+                <TextBlock Text="Settings" Style="{StaticResource Text.Title}" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- ═══════════ ACCOUNT ═══════════ -->
+            <Border Style="{StaticResource Card.Panel}" Padding="22" Margin="0,0,0,16">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource Icon.User}"
+                              Width="18" Height="18" Stretch="Uniform"
+                              Fill="{DynamicResource Brush.Accent}" Margin="0,0,10,0"/>
+                        <TextBlock Text="Account &amp; Authentication"
+                                   Style="{StaticResource Text.SectionHeader}"/>
+                    </StackPanel>
+
+                    <!-- Offline account -->
+                    <Border Style="{StaticResource Card}" Padding="16" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Offline / Cracked Account"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource Brush.Text.Primary}"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock Text="Play without a Microsoft account. No access to online servers."
+                                           Style="{StaticResource Text.Caption}"
+                                           Margin="0,0,0,10"/>
+                                <TextBox Style="{StaticResource TextBox.Base}"
+                                         Text="{Binding OfflineUsername, UpdateSourceTrigger=PropertyChanged}"
+                                         Padding="10,8" MaxWidth="300" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource Button.Ghost}"
+                                    Command="{Binding LoginOfflineCommand}"
+                                    Padding="14,9" VerticalAlignment="Bottom">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource Icon.Login}"
+                                          Width="14" Height="14" Stretch="Uniform"
+                                          Fill="{DynamicResource Brush.Text.Secondary}" Margin="0,0,7,0"/>
+                                    <TextBlock Text="Use Offline"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Microsoft account -->
+                    <Border Style="{StaticResource Card}" Padding="16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                    <TextBlock Text="Microsoft Account"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource Brush.Text.Primary}"/>
+                                    <!-- Unavailable badge -->
+                                    <Border CornerRadius="4" Background="#1AF0757F"
+                                            Padding="5,2" Margin="8,0,0,0"
+                                            Visibility="{Binding MsAuthAvailable, Converter={StaticResource InverseBoolToVis}}">
+                                        <TextBlock Text="Azure Client ID required"
+                                                   FontSize="10"
+                                                   Foreground="{DynamicResource Brush.Danger}"/>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Text="Sign in with your Microsoft account via device-code flow."
+                                           Style="{StaticResource Text.Caption}" Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding MsAuthStatus}"
+                                           Style="{StaticResource Text.Caption}"
+                                           Foreground="{DynamicResource Brush.Accent}"/>
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Page" Style="{StaticResource Text.Caption}"
+                                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBox Grid.Column="1" Text="{Binding MsVerificationUrl}" IsReadOnly="True"
+                                             Style="{StaticResource TextBox.Base}" Padding="7,5"/>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <Button Style="{StaticResource Button.Ghost}" Content="Copy"
+                                                Command="{Binding CopyMsVerificationUrlCommand}"
+                                                Padding="8,5" Margin="6,0,0,0"/>
+                                        <Button Style="{StaticResource Button.Ghost}" Content="Open"
+                                                Command="{Binding OpenMsVerificationUrlCommand}"
+                                                Padding="8,5" Margin="4,0,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,6,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Code" Style="{StaticResource Text.Caption}"
+                                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBox Grid.Column="1" Text="{Binding MsDeviceCode}" IsReadOnly="True"
+                                             Style="{StaticResource TextBox.Base}" Padding="7,5"/>
+                                    <Button Grid.Column="2" Style="{StaticResource Button.Ghost}" Content="Copy"
+                                            Command="{Binding CopyMsDeviceCodeCommand}"
+                                            Padding="8,5" Margin="6,0,0,0"/>
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                                <Button Style="{StaticResource Button.Primary}"
+                                        Command="{Binding LoginMicrosoftCommand}"
+                                        IsEnabled="{Binding MsAuthAvailable}"
+                                        Padding="14,9" Margin="0,0,0,6">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource Icon.Login}"
+                                              Width="14" Height="14" Stretch="Uniform"
+                                              Fill="White" Margin="0,0,7,0"/>
+                                        <TextBlock Text="Sign In" FontWeight="SemiBold" Foreground="White"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Azure Client ID -->
+                    <StackPanel Margin="0,12,0,0">
+                        <Grid Margin="0,0,0,5">
+                            <TextBlock Text="Azure Application Client ID"
+                                       Style="{StaticResource Text.Caption}"/>
+                            <Button HorizontalAlignment="Right" Style="{StaticResource Button.Ghost}"
+                                    Command="{Binding OpenMsAzureHelpCommand}"
+                                    Padding="8,3" FontSize="11.5">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource Icon.ExternalLink}"
+                                          Width="11" Height="11" Stretch="Uniform"
+                                          Fill="{DynamicResource Brush.Accent}" Margin="0,0,4,0"/>
+                                    <TextBlock Text="How to get one?" Foreground="{DynamicResource Brush.Accent}"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <TextBox Style="{StaticResource TextBox.Base}"
+                                 Text="{Binding AzureClientId, UpdateSourceTrigger=PropertyChanged}"
+                                 Padding="10,8"
+                                 ToolTip="Register your own Azure app at portal.azure.com to enable MS sign-in"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════ JAVA ═══════════ -->
+            <Border Style="{StaticResource Card.Panel}" Padding="22" Margin="0,0,0,16">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource Icon.Terminal}"
+                              Width="18" Height="18" Stretch="Uniform"
+                              Fill="{DynamicResource Brush.Accent}" Margin="0,0,10,0"/>
+                        <TextBlock Text="Java Runtime"
+                                   Style="{StaticResource Text.SectionHeader}"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Global Java Override Path" Style="{StaticResource Text.Caption}" Margin="0,0,0,5"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Style="{StaticResource TextBox.Base}"
+                                 Text="{Binding JavaOverridePath, UpdateSourceTrigger=PropertyChanged}"
+                                 Padding="10,8"
+                                 ToolTip="Full path to javaw.exe or java. Leave blank to auto-detect per instance."/>
+                        <Button Grid.Column="1" Style="{StaticResource Button.Ghost}"
+                                Margin="8,0,0,0" Padding="12,8"
+                                Click="BrowseJava_Click"
+                                ToolTip="Browse for Java executable">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource Icon.Folder}"
+                                      Width="13" Height="13" Stretch="Uniform"
+                                      Fill="{DynamicResource Brush.Text.Secondary}" Margin="0,0,6,0"/>
+                                <TextBlock Text="Browse"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <TextBlock Text="Leave blank to auto-detect Java from the Mojang runtime manifest."
+                               Style="{StaticResource Text.Caption}" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════ MEMORY ═══════════ -->
+            <Border Style="{StaticResource Card.Panel}" Padding="22" Margin="0,0,0,16">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource Icon.Server}"
+                              Width="18" Height="18" Stretch="Uniform"
+                              Fill="{DynamicResource Brush.Accent}" Margin="0,0,10,0"/>
+                        <TextBlock Text="Memory &amp; Performance"
+                                   Style="{StaticResource Text.SectionHeader}"/>
+                    </StackPanel>
+
+                    <Grid Margin="0,0,0,8">
+                        <TextBlock Text="Default Memory (MB)" Style="{StaticResource Text.Caption}"/>
+                        <TextBlock HorizontalAlignment="Right" Style="{StaticResource Text.Caption}">
+                            <Run Text="{Binding DefaultMemoryMb, Mode=OneWay}"/>
+                            <Run Text="MB" Foreground="{DynamicResource Brush.Text.Muted}"/>
+                        </TextBlock>
+                    </Grid>
+                    <Slider Minimum="512" Maximum="32768" TickFrequency="512"
+                            IsSnapToTickEnabled="True"
+                            Value="{Binding DefaultMemoryMb, Mode=TwoWay}"/>
+                    <TextBlock Text="Applied to new instances. Existing instances keep their own setting."
+                               Style="{StaticResource Text.Caption}" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════ APPEARANCE ═══════════ -->
+            <Border Style="{StaticResource Card.Panel}" Padding="22" Margin="0,0,0,16">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource Icon.Sparkle}"
+                              Width="18" Height="18" Stretch="Uniform"
+                              Fill="{DynamicResource Brush.Accent}" Margin="0,0,10,0"/>
+                        <TextBlock Text="Appearance &amp; Behaviour"
+                                   Style="{StaticResource Text.SectionHeader}"/>
+                    </StackPanel>
+
+                    <!-- Snapshot toggle -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Show Snapshots in Home version list"
+                                       Foreground="{DynamicResource Brush.Text.Primary}" FontSize="13"/>
+                            <TextBlock Text="Displays pre-release and snapshot versions"
+                                       Style="{StaticResource Text.Caption}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Premium}" IsChecked="{Binding ShowSnapshots}"
+                                  VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Old versions toggle -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Show Legacy versions (Alpha / Beta)"
+                                       Foreground="{DynamicResource Brush.Text.Primary}" FontSize="13"/>
+                            <TextBlock Text="Shows old_alpha and old_beta entries"
+                                       Style="{StaticResource Text.Caption}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Premium}" IsChecked="{Binding ShowOldVersions}"
+                                  VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Close after launch -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Close launcher after Minecraft launches"
+                                       Foreground="{DynamicResource Brush.Text.Primary}" FontSize="13"/>
+                            <TextBlock Text="Minimizes system tray usage while playing"
+                                       Style="{StaticResource Text.Caption}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Premium}" IsChecked="{Binding CloseAfterLaunch}"
+                                  VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Confirm destructive actions"
+                                       Foreground="{DynamicResource Brush.Text.Primary}" FontSize="13"/>
+                            <TextBlock Text="Ask before permanently deleting instances and their files"
+                                       Style="{StaticResource Text.Caption}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Premium}"
+                                  IsChecked="{Binding ConfirmDestructiveActions}"
+                                  VerticalAlignment="Center"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════ DATA ═══════════ -->
+            <Border Style="{StaticResource Card.Panel}" Padding="22" Margin="0,0,0,16">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource Icon.Folder}"
+                              Width="18" Height="18" Stretch="Uniform"
+                              Fill="{DynamicResource Brush.Accent}" Margin="0,0,10,0"/>
+                        <TextBlock Text="Data Directory"
+                                   Style="{StaticResource Text.SectionHeader}"/>
+                    </StackPanel>
+
+                    <Border Style="{StaticResource Card}" Padding="14,10" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Application Data Root"
+                                           Style="{StaticResource Text.Caption}" Margin="0,0,0,3"/>
+                                <TextBlock Text="{Binding DataRoot}"
+                                           Foreground="{DynamicResource Brush.Text.Primary}"
+                                           FontFamily="Consolas" FontSize="12"
+                                           TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource Button.Ghost}"
+                                    Command="{Binding OpenDataFolderCommand}"
+                                    Padding="12,8" Margin="12,0,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource Icon.ExternalLink}"
+                                          Width="13" Height="13" Stretch="Uniform"
+                                          Fill="{DynamicResource Brush.Text.Secondary}" Margin="0,0,6,0"/>
+                                    <TextBlock Text="Open in Explorer"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <TextBlock Text="Instances, libraries, Java runtimes and settings are stored here."
+                               Style="{StaticResource Text.Caption}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Save + Status bar -->
+            <Grid Margin="0,4,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Style="{StaticResource Button.Primary}"
+                        Command="{Binding SaveCommand}"
+                        Padding="20,11">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource Icon.Check}"
+                              Width="14" Height="14" Stretch="Uniform"
+                              Fill="White" Margin="0,0,7,0"/>
+                        <TextBlock Text="Save Settings" FontWeight="SemiBold" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+                <TextBlock Grid.Column="1" Text="{Binding Status}"
+                           Style="{StaticResource Text.Caption}"
+                           Foreground="{DynamicResource Brush.Success}"
+                           VerticalAlignment="Center" Margin="14,0,0,0"/>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

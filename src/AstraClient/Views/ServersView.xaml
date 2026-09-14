@@ -1,0 +1,308 @@
+<UserControl x:Class="AstraClient.Views.ServersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid Background="{DynamicResource Brush.App.Background}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280" MinWidth="240"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ═══════════════ LEFT — Server list + create ═══════════════ -->
+        <Border Grid.Column="0"
+                Background="{DynamicResource Brush.Chrome.Fill}"
+                BorderBrush="{DynamicResource Brush.Separator}"
+            BorderThickness="0,0,1,0"
+            CornerRadius="12,0,0,12"
+            ClipToBounds="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Padding="16,14,16,10"
+                        BorderBrush="{DynamicResource Brush.Separator}"
+                        BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Text="LOCAL SERVERS" Style="{StaticResource Text.Caption}" FontWeight="Bold"/>
+                        <TextBlock Text="Private, local hosting" Style="{StaticResource Text.Caption}" Margin="0,4,0,0"/>
+                        <TextBlock Style="{StaticResource Text.Caption}" Margin="0,6,0,0">
+                            <Run Text="{Binding Servers.Count, Mode=OneWay}"/>
+                            <Run Text="server(s)"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="8">
+                    <StackPanel>
+                        <StackPanel Margin="8,20" HorizontalAlignment="Center">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Servers.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <Path Data="{StaticResource Icon.Server}"
+                                  Width="30" Height="30" Stretch="Uniform"
+                                  Fill="{DynamicResource Brush.Text.Muted}"
+                                  HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                            <TextBlock Text="No servers yet." Style="{StaticResource Text.Caption}"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Use the form below to create one."
+                                       Style="{StaticResource Text.Caption}"
+                                       HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                        </StackPanel>
+
+                        <ListBox ItemsSource="{Binding Servers}"
+                                 SelectedItem="{Binding SelectedServer, Mode=TwoWay}"
+                                 Background="Transparent" BorderThickness="0">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0,2"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border x:Name="bd" CornerRadius="10" Padding="12,10"
+                                                        Background="{TemplateBinding Background}">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="bd" Property="Background" Value="{DynamicResource Brush.Glass.Card}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="bd" Property="Background" Value="{DynamicResource Brush.Selection}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"
+                                                   Foreground="{DynamicResource Brush.Text.Primary}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock FontSize="11" Foreground="{DynamicResource Brush.Text.Muted}" Margin="0,2,0,0">
+                                            <Run Text="{Binding Type}"/>
+                                            <Run Text=" · "/>
+                                            <Run Text="{Binding GameVersion}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="OFFLINE" FontSize="10" Foreground="{DynamicResource Brush.Text.Muted}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Border Grid.Row="2" Padding="12,12"
+                        BorderBrush="{DynamicResource Brush.Separator}"
+                        BorderThickness="0,1,0,0">
+                    <StackPanel>
+                        <TextBlock Text="NEW SERVER" Style="{StaticResource Text.Caption}" FontWeight="Bold"/>
+                        <TextBlock Text="Name" Style="{StaticResource Text.Caption}" Margin="0,10,0,4"/>
+                        <TextBox Style="{StaticResource TextBox.Base}"
+                                 Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Name shown in Astra"/>
+                        <TextBlock Text="Minecraft version" Style="{StaticResource Text.Caption}" Margin="0,8,0,4"/>
+                        <TextBox Style="{StaticResource TextBox.Base}"
+                                 Text="{Binding NewVersion, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Minecraft version, for example 1.21.1"/>
+                        <TextBlock Text="Distribution" Style="{StaticResource Text.Caption}" Margin="0,8,0,4"/>
+                        <ComboBox ItemsSource="{Binding ServerTypeOptions}"
+                                  DisplayMemberPath="Label"
+                                  SelectedValuePath="Type"
+                                  SelectedValue="{Binding NewType, Mode=TwoWay}"
+                                  ToolTip="Server distribution to install"/>
+                        <Button Style="{StaticResource Button.Primary}"
+                                Command="{Binding CreateAndProvisionCommand}"
+                                ToolTip="Creates isolated folders and downloads the selected server distribution"
+                                Margin="0,12,0,0" Padding="12,9">
+                            <TextBlock Text="Create &amp; Download" Foreground="White" FontWeight="SemiBold"/>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ═══════════════ RIGHT — Server detail ═══════════════ -->
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="28,22" MaxWidth="920">
+                <Border Background="#33E7B45A" BorderBrush="#88E7B45A" BorderThickness="1"
+                        CornerRadius="12" Padding="14,12" Margin="0,0,0,16"
+                        ToolTip="Router port forwarding and Windows Firewall rules must be configured outside Astra.">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Path Data="{StaticResource Icon.Warning}" Width="22" Height="22"
+                              Fill="#FFFFD36A" Stretch="Uniform" Margin="0,0,12,0" />
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="NETWORK ACCESS REQUIRES YOUR ROUTER"
+                                       FontWeight="Bold" Foreground="#FFFFE6A8" />
+                            <TextBlock Text="Astra manages the server locally. To allow friends outside your network, forward the selected TCP port and allow Java through Windows Firewall."
+                                       Foreground="#FFF7E9BF" TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <TextBlock Text="{Binding Status}" Style="{StaticResource Text.Caption}"
+                           Foreground="{DynamicResource Brush.Accent}" Margin="0,0,0,16"/>
+
+                <StackPanel Visibility="{Binding HasSelection, Converter={StaticResource InverseBoolToVis}}"
+                            HorizontalAlignment="Center" Margin="0,80">
+                    <Path Data="{StaticResource Icon.Server}"
+                          Width="48" Height="48" Stretch="Uniform"
+                          Fill="{DynamicResource Brush.Text.Muted}"
+                          HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                    <TextBlock Text="Create a local server to begin"
+                               Style="{StaticResource Text.Title}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Astra keeps each server's files, world, mods, plugins and backups isolated."
+                               Style="{StaticResource Text.Caption}" Margin="0,8" TextAlignment="Center"
+                               MaxWidth="420"/>
+                </StackPanel>
+
+                <StackPanel Visibility="{Binding HasSelection, Converter={StaticResource BoolToVis}}">
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{Binding SelectedServer.Name}" Style="{StaticResource Text.Title}"/>
+                            <TextBlock Text="Managed locally by Astra · separate from Aternos"
+                                       Style="{StaticResource Text.Caption}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding OpenFolderCommand}"
+                                    ToolTip="Open this server's isolated folder" Padding="12,8">
+                                <TextBlock Text="Open folder"/>
+                            </Button>
+                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding BackupCommand}"
+                                    ToolTip="Create a compressed backup of the world"
+                                    Margin="8,0,0,0" Padding="12,8">
+                                <TextBlock Text="Backup world"/>
+                            </Button>
+                            <Button Style="{StaticResource Button.Primary}" Command="{Binding StartCommand}"
+                                    ToolTip="Start the server after accepting the EULA"
+                                    Margin="8,0,0,0" Padding="14,8">
+                                <TextBlock Text="Start" Foreground="White" FontWeight="SemiBold"/>
+                            </Button>
+                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding StopCommand}"
+                                    ToolTip="Safely send the stop command to the server"
+                                    Margin="8,0,0,0" Padding="12,8">
+                                <TextBlock Text="Stop"/>
+                            </Button>
+                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding RestartCommand}"
+                                    ToolTip="Stop and start this server again"
+                                    Margin="8,0,0,0" Padding="12,8">
+                                <TextBlock Text="Restart"/>
+                            </Button>
+                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding SaveCommand}"
+                                    ToolTip="Save server settings" Margin="8,0,0,0" Padding="12,8">
+                                <TextBlock Text="Save"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Style="{StaticResource Card.Panel}" Padding="18" Margin="0,0,0,14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="SERVER SETTINGS" Style="{StaticResource Text.Caption}" FontWeight="Bold"/>
+                                <TextBlock Text="Message of the day" Style="{StaticResource Text.Caption}" Margin="0,12,0,4"/>
+                                <TextBox Style="{StaticResource TextBox.Base}"
+                                         Text="{Binding SelectedServer.Motd, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Shown in the Minecraft multiplayer list"/>
+                                <TextBlock Text="Port" Style="{StaticResource Text.Caption}" Margin="0,10,0,4"/>
+                                <TextBox Style="{StaticResource TextBox.Base}"
+                                         Text="{Binding SelectedServer.Port, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Default Minecraft port is 25565"/>
+                                <TextBlock Text="Max players" Style="{StaticResource Text.Caption}" Margin="0,10,0,4"/>
+                                <TextBox Style="{StaticResource TextBox.Base}"
+                                         Text="{Binding SelectedServer.MaxPlayers, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Maximum simultaneous players"/>
+                                <TextBlock Text="Forge / NeoForge installer URL" Style="{StaticResource Text.Caption}" Margin="0,10,0,4"/>
+                                <TextBox Style="{StaticResource TextBox.Base}"
+                                         Text="{Binding SelectedServer.InstallerUrl, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Official HTTPS installer JAR URL. Required only for Forge and NeoForge."/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock Text="RUNTIME &amp; SAFETY" Style="{StaticResource Text.Caption}" FontWeight="Bold"/>
+                                <TextBlock Text="Memory (MB)" Style="{StaticResource Text.Caption}" Margin="0,12,0,4"/>
+                                <TextBox Style="{StaticResource TextBox.Base}"
+                                         Text="{Binding SelectedServer.MemoryMb, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Maximum heap allocated to this server"/>
+                                <CheckBox Style="{StaticResource CheckBox.Premium}" IsChecked="{Binding SelectedServer.EulaAccepted}"
+                                          ToolTip="Required by Mojang before the first server start"
+                                          Margin="0,12,0,0" Content="I accept the Minecraft EULA"
+                                          Foreground="{DynamicResource Brush.Text.Primary}"/>
+                                <CheckBox Style="{StaticResource CheckBox.Premium}" IsChecked="{Binding SelectedServer.OnlineMode}"
+                                          ToolTip="Verify player accounts with Mojang"
+                                          Margin="0,6,0,0" Content="Online mode (recommended)"
+                                          Foreground="{DynamicResource Brush.Text.Primary}"/>
+                                <CheckBox Style="{StaticResource CheckBox.Premium}" IsChecked="{Binding SelectedServer.Pvp}"
+                                          ToolTip="Allow player versus player damage"
+                                          Margin="0,6,0,0" Content="Enable PvP"
+                                          Foreground="{DynamicResource Brush.Text.Primary}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}" Padding="16" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="NETWORK CHECKLIST" Style="{StaticResource Text.SectionHeader}"/>
+                            <TextBlock Text="1. Keep 25565 unless another local application uses it.  2. Allow Java through Windows Defender Firewall.  3. For friends outside your home, forward TCP to this PC's local IPv4 and server port.  4. Do not expose RCON or disable online mode on a public server."
+                                       Style="{StaticResource Text.Body}" Margin="0,8,0,0"/>
+                            <TextBlock Text="Astra cannot change router or firewall rules without your explicit administrator action."
+                                       Style="{StaticResource Text.Caption}"
+                                       Foreground="{DynamicResource Brush.Warning}" Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card.Panel}" Padding="18">
+                        <StackPanel>
+                            <TextBlock Text="LIVE CONSOLE" Style="{StaticResource Text.Caption}" FontWeight="Bold"/>
+                            <TextBlock Text="Use standard Minecraft server commands such as say, whitelist, op or save-all."
+                                       Style="{StaticResource Text.Caption}" Margin="0,4,0,10"/>
+                            <TextBox Text="{Binding Console}" IsReadOnly="True" FontFamily="Consolas"
+                                     Height="220" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                     Background="{DynamicResource Brush.Input.Fill}"
+                                     Foreground="{DynamicResource Brush.Text.Primary}"
+                                     BorderBrush="{DynamicResource Brush.Glass.Border}" BorderThickness="1"
+                                     Padding="10" ToolTip="Live stdout and stderr from the server process"/>
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Style="{StaticResource TextBox.Base}"
+                                         Text="{Binding ConsoleInput, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Command sent directly to the running server"/>
+                                <Button Grid.Column="1" Style="{StaticResource Button.Primary}"
+                                        Command="{Binding SendConsoleCommand}"
+                                        ToolTip="Send command to the running server" Margin="8,0,0,0" Padding="16,9">
+                                    <TextBlock Text="Send" Foreground="White"/>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
