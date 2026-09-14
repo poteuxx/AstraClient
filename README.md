@@ -12,4 +12,3 @@ Expected public URLs for the `poteuxx/AstraClient` repository:
 - https://poteuxx.github.io/AstraClient/privacy.html
 - https://poteuxx.github.io/AstraClient/terms.html
 
-The Microsoft registration draft is available in [`MICROSOFT-REQUEST.md`](MICROSOFT-REQUEST.md).
