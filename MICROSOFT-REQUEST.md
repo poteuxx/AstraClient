@@ -29,7 +29,7 @@ AstraClient does not collect or store Microsoft passwords. Access tokens are use
 - Website: https://poteuxx.github.io/AstraClient/
 - Privacy policy: https://poteuxx.github.io/AstraClient/privacy.html
 - Terms of use: https://poteuxx.github.io/AstraClient/terms.html
-- Azure application client ID: [YOUR AZURE CLIENT ID]
+- Azure application client ID: 3f5e420b-ca37-4db9-aac0-b55074247555
 
 AstraClient is an independent project and is not affiliated with or endorsed by Mojang Studios or Microsoft.
 
