@@ -12,4 +12,4 @@ Expected public URLs for the `poteuxx/AstraClient` repository:
 - https://poteuxx.github.io/AstraClient/privacy.html
 - https://poteuxx.github.io/AstraClient/terms.html
 
-The Microsoft registration draft is available in [`MICROSOFT-REQUEST.md`](MICROSOFT-REQUEST.md). Replace the Azure client ID placeholder before sending it.
+The Microsoft registration draft is available in [`MICROSOFT-REQUEST.md`](MICROSOFT-REQUEST.md).
